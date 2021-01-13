@@ -15,6 +15,14 @@ type DateDiff struct {
 	Days   int
 }
 
+type Duration struct {
+	Years      int
+	Months     int
+	Days       int
+	IsFinished bool
+	Error      error
+}
+
 func (fd FullDate) Age(referenceDate time.Time) DateDiff {
 	referenceDate = stripTimeComponent(referenceDate)
 

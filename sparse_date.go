@@ -78,12 +78,12 @@ func (sd *SparseDate) GetMinDate() time.Time {
 	outputYear := strings.Replace(sd.year, "?", "0", -1)
 	// check month
 	outputMonth := sd.month
-	if outputMonth == "?" || outputMonth == "??" {
+	if outputMonth == "" || outputMonth == "?" || outputMonth == "??" {
 		outputMonth = "01"
 	}
 	// check day
 	outputDay := sd.day
-	if outputDay == "?" || outputDay == "??" {
+	if outputDay == "" || outputDay == "?" || outputDay == "??" {
 		outputDay = "01"
 	}
 	time, _ := time.Parse("20060102", outputYear+outputMonth+outputDay)
@@ -100,12 +100,12 @@ func (sd *SparseDate) GetMaxDate() time.Time {
 	outputYear := strings.Replace(sd.year, "?", "9", -1)
 	// check month
 	outputMonth := sd.month
-	if outputMonth == "?" || outputMonth == "??" {
+	if outputMonth == "" || outputMonth == "?" || outputMonth == "??" {
 		outputMonth = "12"
 	}
 	// check day
 	outputDay := sd.day
-	if outputDay == "?" || outputDay == "??" {
+	if outputDay == "" || outputDay == "?" || outputDay == "??" {
 		month, err := strconv.Atoi(outputMonth)
 		if err == nil {
 			outputYearInt, errInt := strconv.Atoi(outputYear)
@@ -148,7 +148,15 @@ func (sd *SparseDate) GetDateFormatted(format string) string {
 	return date.Format(format)
 }
 
+func (sd *SparseDate) init() {
+	sd.year = "????"
+	sd.month = "??"
+	sd.day = "??"
+}
+
 func (sd *SparseDate) Parse(input, dateFormat string) {
+	sd.init()
+
 	yearIndex := strings.Index(dateFormat, "2006")
 	if len(input) >= yearIndex+4 {
 		sd.year = input[yearIndex : yearIndex+4]
@@ -188,12 +196,12 @@ func (sd *SparseDate) Format(formatString string) string {
 	}
 	var result string
 	// special case: only year given
-	if sd.month == "??" && sd.day == "??" {
+	if sd.month == "??" && sd.day == "??" && strings.Contains(formatString, "2006") {
 		result = "2006"
 	} else {
 		result = formatString
 	}
-	replacer := strings.NewReplacer("2006", sd.year, "01", sd.month, "02", sd.day)
+	replacer := strings.NewReplacer("2006", sd.year, "01", sd.month, "02", sd.day, "1", strings.TrimPrefix(sd.month, "0"), "2", strings.TrimPrefix(sd.day, "0"))
 	result = replacer.Replace(result)
 	return result
 }
