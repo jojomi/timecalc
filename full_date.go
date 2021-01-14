@@ -23,50 +23,26 @@ type Duration struct {
 	Error      error
 }
 
+// Age returns the number of years, months, and days passed at the given
+// reference date since this FullDate.
 func (fd FullDate) Age(referenceDate time.Time) DateDiff {
 	referenceDate = stripTimeComponent(referenceDate)
-
-	years := referenceDate.Year() - fd.Year()
-	if referenceDate.Month() < fd.Month() ||
-		(referenceDate.Month() == fd.Month() && referenceDate.Day() < fd.Day()) {
-		years--
-	}
-
-	months := int(referenceDate.Month()) - int(fd.Month())
-	if referenceDate.Day() < fd.Day() {
-		months--
-	}
-	if months < 0 {
-		months += 12
-	}
-
-	var days int
-	if referenceDate.Day() >= fd.Day() {
-		days = referenceDate.Day() - fd.Day()
-	} else {
-		days = (getMonthDays(fd.Year(), int(fd.Month())) - fd.Day()) + referenceDate.Day()
-	}
-
-	return DateDiff{
-		Years:  years,
-		Months: months,
-		Days:   days,
-	}
+	return CalcDateDiff(fd, FullDate{&referenceDate})
 }
 
+// AgeYears returns the number of full years passed for the given reference date
+// since this FullDate.
 func (fd FullDate) AgeYears(referenceDate time.Time) int {
 	return fd.Age(referenceDate).Years
 }
 
-func (fd FullDate) InverseAgeYears(referenceDate time.Time) int {
+func (fd FullDate) InverseAge(referenceDate time.Time) DateDiff {
 	referenceDate = stripTimeComponent(referenceDate)
-	age := fd.Year() - referenceDate.Year()
-	if fd.Month() < referenceDate.Month() ||
-		(fd.Month() == referenceDate.Month() && fd.Day() < referenceDate.Day()) {
-		age--
-	}
+	return CalcDateDiff(FullDate{&referenceDate}, fd)
+}
 
-	return age
+func (fd FullDate) InverseAgeYears(referenceDate time.Time) int {
+	return fd.InverseAge(referenceDate).Years
 }
 
 type AstrologicalSign struct {
@@ -250,6 +226,35 @@ func (fd FullDate) NextAnniversary(referenceDate time.Time) time.Time {
 func (fd FullDate) NextAnniversaryFullDate(referenceDate time.Time) FullDate {
 	nextDate := fd.NextAnniversary(referenceDate)
 	return FullDate{&nextDate}
+}
+
+func CalcDateDiff(a, b FullDate) DateDiff {
+	years := b.Year() - a.Year()
+	if b.Month() < a.Month() ||
+		(b.Month() == a.Month() && b.Day() < a.Day()) {
+		years--
+	}
+
+	months := int(b.Month()) - int(a.Month())
+	if b.Day() < a.Day() {
+		months--
+	}
+	if months < 0 {
+		months += 12
+	}
+
+	var days int
+	if b.Day() >= a.Day() {
+		days = b.Day() - a.Day()
+	} else {
+		days = (getMonthDays(a.Year(), int(a.Month())) - a.Day()) + b.Day()
+	}
+
+	return DateDiff{
+		Years:  years,
+		Months: months,
+		Days:   days,
+	}
 }
 
 func stripTimeComponent(t time.Time) time.Time {

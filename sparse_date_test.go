@@ -8,17 +8,21 @@ import (
 )
 
 func TestSparseDateFrom(t *testing.T) {
+	// parse a full date
 	sd1 := SparseDateFrom("1924-12-13")
 	assert.Equal(t, "1924-12-13", sd1.GetDate().Format("2006-01-02"))
 
+	// parse incomplete (sparse) date
 	sd2 := SparseDateFrom("1924-12-??")
 	assert.True(t, sd2.GetDate().IsZero())
 }
 
 func TestSparseDateFromLocalized(t *testing.T) {
+	// parse full localized date (custom format)
 	sd1 := SparseDateFromLocalized("1924.12.14", "2006.01.02")
 	assert.Equal(t, "1924-12-14", sd1.GetDate().Format("2006-01-02"))
 
+	// parse incomplete localized date (custom format)
 	sd2 := SparseDateFromLocalized("1924.12.??", "2006.01.02")
 	assert.True(t, sd2.GetDate().IsZero())
 }

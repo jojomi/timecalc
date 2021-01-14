@@ -18,7 +18,7 @@ func TestAge(t *testing.T) {
 			time.Date(2010, 05, 06, 0, 0, 0, 0, time.UTC),
 			DateDiff{Years: 8, Months: 5, Days: 25},
 		},
-		// special case: year overflow (monath!)
+		// special case: year overflow (month!)
 		{
 			time.Date(2018, 10, 15, 15, 45, 58, 0, time.UTC),
 			time.Date(2017, 12, 15, 0, 0, 0, 0, time.UTC),
@@ -52,6 +52,14 @@ func TestAgeYears(t *testing.T) {
 	sd1 := FullDate{&full}
 	age := sd1.AgeYears(referenceDate)
 	assert.Equal(t, 5, age)
+}
+
+func TestInverseAgeYears(t *testing.T) {
+	referenceDate := time.Date(2018, 10, 31, 15, 45, 58, 0, time.UTC)
+	full := time.Date(2020, 05, 06, 0, 0, 0, 0, time.UTC)
+	sd1 := FullDate{&full}
+	age := sd1.InverseAgeYears(referenceDate)
+	assert.Equal(t, 1, age)
 }
 
 func TestAgeCornerCase(t *testing.T) {
