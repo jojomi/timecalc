@@ -172,7 +172,7 @@ func (sd *SparseDate) Parse(input, dateFormat string) {
 }
 
 func (sd *SparseDate) IsEmpty() bool {
-	return sd.year == "" && sd.month == "" && sd.day == ""
+	return sd.year == "????" && sd.month == "??" && sd.day == "??"
 }
 
 func (sd *SparseDate) String() string {

@@ -35,6 +35,31 @@ func TestComplete(t *testing.T) {
 	assert.False(t, sd2.IsComplete(), "SparseDate is not complete")
 }
 
+func TestIsEmpty(t *testing.T) {
+	tests := []struct {
+		Input    string
+		Expected bool
+	}{
+		{
+			Input:    "????-??-??",
+			Expected: true,
+		},
+		{
+			Input:    "1985-06-??",
+			Expected: false,
+		},
+		{
+			Input:    "1983-01-02",
+			Expected: false,
+		},
+	}
+	var sd *SparseDate
+	for _, test := range tests {
+		sd = SparseDateFrom(test.Input)
+		assert.Equal(t, test.Expected, sd.IsEmpty(), fmt.Sprintf("IsEmpty for %s should be %t", test.Input, test.Expected))
+	}
+}
+
 type InOutTest struct {
 	in, out string
 }
@@ -109,6 +134,7 @@ func TestFormat(t *testing.T) {
 		{"2010-05-06", "2006", "2010"},
 		{"20??-05-??", "02.01.2006", "??.05.20??"},
 		{"2011-??-??", "02.01.2006", "2011"},
+		{"????-??-??", "02.01.2006", ""},
 	}
 
 	for _, test := range tests {
