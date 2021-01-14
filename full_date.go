@@ -27,7 +27,7 @@ type Duration struct {
 // reference date since this FullDate.
 func (fd FullDate) Age(referenceDate time.Time) DateDiff {
 	referenceDate = stripTimeComponent(referenceDate)
-	return CalcDateDiff(fd, FullDate{&referenceDate})
+	return GetDateDiff(fd, FullDate{&referenceDate})
 }
 
 // AgeYears returns the number of full years passed for the given reference date
@@ -38,7 +38,7 @@ func (fd FullDate) AgeYears(referenceDate time.Time) int {
 
 func (fd FullDate) InverseAge(referenceDate time.Time) DateDiff {
 	referenceDate = stripTimeComponent(referenceDate)
-	return CalcDateDiff(FullDate{&referenceDate}, fd)
+	return GetDateDiff(FullDate{&referenceDate}, fd)
 }
 
 func (fd FullDate) InverseAgeYears(referenceDate time.Time) int {
@@ -228,7 +228,7 @@ func (fd FullDate) NextAnniversaryFullDate(referenceDate time.Time) FullDate {
 	return FullDate{&nextDate}
 }
 
-func CalcDateDiff(a, b FullDate) DateDiff {
+func GetDateDiff(a, b FullDate) DateDiff {
 	years := b.Year() - a.Year()
 	if b.Month() < a.Month() ||
 		(b.Month() == a.Month() && b.Day() < a.Day()) {

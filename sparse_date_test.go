@@ -67,15 +67,15 @@ type InOutTest struct {
 func TestGetMinDate(t *testing.T) {
 	var sd *SparseDate
 	tests := []InOutTest{
-		InOutTest{
+		{
 			in:  "1975-06-??",
 			out: "1975-06-01",
 		},
-		InOutTest{
+		{
 			in:  "1966-??-04",
 			out: "1966-01-04",
 		},
-		InOutTest{
+		{
 			in:  "1982-??-??",
 			out: "1982-01-01",
 		},
@@ -89,31 +89,31 @@ func TestGetMinDate(t *testing.T) {
 func TestGetMaxDate(t *testing.T) {
 	var sd *SparseDate
 	tests := []InOutTest{
-		InOutTest{
+		{
 			in:  "1975-06-??",
 			out: "1975-06-30",
 		},
-		InOutTest{
+		{
 			in:  "2?0?-02-??",
 			out: "2909-02-28",
 		},
-		InOutTest{
+		{
 			in:  "2000-02-??",
 			out: "2000-02-29",
 		},
-		InOutTest{
+		{
 			in:  "2100-02-??",
 			out: "2100-02-28",
 		},
-		InOutTest{
+		{
 			in:  "2004-02-??",
 			out: "2004-02-29",
 		},
-		InOutTest{
+		{
 			in:  "1966-??-04",
 			out: "1966-12-04",
 		},
-		InOutTest{
+		{
 			in:  "1982-??-??",
 			out: "1982-12-31",
 		},
